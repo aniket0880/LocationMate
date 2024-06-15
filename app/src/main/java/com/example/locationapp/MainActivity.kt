@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import com.example.locationapp.ui.theme.LocationAppTheme
@@ -32,11 +33,18 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
+                    MyApp()
                 }
             }
         }
     }
+}
+
+@Composable
+fun MyApp(){
+    val context= LocalContext.current
+    val locationUtils=LocationUtils(context)
+    LocationDisplay(locationUtils = locationUtils, context =context )
 }
 
 @Composable
@@ -54,9 +62,10 @@ fun LocationDisplay(locationUtils: LocationUtils,context:Context){
                           || ActivityCompat.shouldShowRequestPermissionRationale(
                               context as MainActivity ,Manifest.permission.ACCESS_COARSE_LOCATION)
                 if (rationalRequired){
-                    Toast.makeText(context,"location permission is requres for this feature to work",
+                    Toast.makeText(context,"location permission is required for this feature to work",
                         Toast.LENGTH_LONG).show()
-                }
+                }else{Toast.makeText(context,"location permission is required for this feature to work. please turn it on from android settings",
+                    Toast.LENGTH_LONG).show()}
 
                 }
         })
@@ -65,12 +74,20 @@ fun LocationDisplay(locationUtils: LocationUtils,context:Context){
         verticalArrangement = Arrangement.Center){
         Text(text = "Location not available")
 
-        Button(onClick = {}) {
+        Button(onClick = {
             if (locationUtils.hasLocationPermission(context)){
 
             }else {
                 //permission has already been granted
+                requestPermissionLauncher.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+
+                    )
+                )
+            }
+            }){ Text(text = "Get location")
             }
         }
     }
-}
