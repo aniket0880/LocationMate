@@ -42,13 +42,14 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+//composable function for app
 @Composable
 fun MyApp(viewModel: LocationViewModel){
     val context= LocalContext.current
     val locationUtils=LocationUtils(context)
     LocationDisplay(locationUtils = locationUtils, viewModel = LocationViewModel(), context =context )
 }
-
+// front display screen ui/ux
 @Composable
 fun LocationDisplay(locationUtils: LocationUtils,
                     viewModel: LocationViewModel,
